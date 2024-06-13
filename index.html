@@ -5,63 +5,265 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mood Tracker</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="p5.js"></script>
+    <script src="p5.speech.js"></script>
+    <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="script.js"></script>
+    <script src="sketch.js"></script>
 </head>
 <body>
-    <div class="phone-container">
-        <div class="phone-screen">
-            <div class="container">
-                <img src="logo.png" class="logo" alt="Logo">
-                <h1>Mood Tracker</h1>
-                <div class="mood-section">
-                    <p>Your current mood:</p>
-                    <div id="mood" class="mood">😐</div>
-                    <div class="emoji-carousel-container">
-                        <div class="emoji-carousel" id="emojiCarousel">
-                            <span class="emoji" onclick="updateMood('😊')">😊</span>
-                            <span class="emoji" onclick="updateMood('😢')">😢</span>
-                            <span class="emoji" onclick="updateMood('😡')">😡</span>
-                            <span class="emoji" onclick="updateMood('😐')">😐</span>
-                            <span class="emoji" onclick="updateMood('😄')">😄</span>
-                            <span class="emoji" onclick="updateMood('😭')">😭</span>
-                            <span class="emoji" onclick="updateMood('😠')">😠</span>
-                            <span class="emoji" onclick="updateMood('😑')">😑</span>
+    <div class="main-container">
+        <div class="carousel-container">
+            <div class="carousel">
+                <!-- New Feature 1 -->
+                <div class="carousel-item active" id="newFeature1">
+                    <div class="logo-container">
+                        <img src="logo.png" class="logo" alt="Logo">
+                        <span class="logo-text">Raiz</span>
+                    </div>
+                    <div class="content-container">
+                        <h2 class="title">Raiz Mood Tracker</h2>
+                        <div id="feature1Content">
+                            <div class="rotating-logos">
+                                <div class="central-logo-container">
+                                    <img src="logo.png" class="central-logo" alt="Central Logo">
+                                </div>
+                                <div class="rotating-logos-inner">
+                                    <img src="voice_input_icon.png" class="rotating-logo" alt="Voice Input Icon">
+                                    <img src="text_input_icon.png" class="rotating-logo" alt="Text Input Icon">
+                                    <img src="geolocation_icon.png" class="rotating-logo" alt="Geolocation Icon">
+                                </div>
+                            </div>
+                            <p class="feature-description">Click Next to explore!</p>
+                        </div>
+                        <div class="navigation-buttons">
+                            <button class="btn" id="feature1Prev" onclick="moveCarousel(-1)">Previous</button>
+                            <button class="btn" id="feature1Next" onclick="moveCarousel(1)">Next</button>
                         </div>
                     </div>
                 </div>
-                <div class="activities">
-                    <p>What did you do today?</p>
-                    <input type="text" id="activityInput" placeholder="Enter activity">
-                    <button class="btn" onclick="addActivity()">Add Activity</button>
+                <!-- Login -->
+                <div class="carousel-item" id="newFeature2">
+                    <div class="logo-container">
+                        <img src="logo.png" class="logo" alt="Logo">
+                        <span class="logo-text">Raiz</span>
+                    </div>
+                    <div class="content-container scrollable-content">
+                        <h2 class="title">Login</h2>
+                        <form id="loginForm" onsubmit="return validateForm(event)">
+                            <div class="input-container">
+                                <input type="tel" id="phone" placeholder="Phone Number" required>
+                            </div>
+                            <div class="input-container">
+                                <input type="password" id="password" placeholder="Password" required>
+                            </div>
+                            <div class="button-container">
+                                <button class="btn" type="submit">Login</button>
+                            </div>
+                        </form>
+                        <div id="loginFeedback" class="feedback"></div>
+                        <div class="navigation-buttons">
+                            <button class="btn" id="feature2Prev" onclick="moveCarousel(-1)">Previous</button>
+                            <button class="btn" id="feature2Next" onclick="moveCarousel(1)">Next</button>
+                        </div>
+                    </div>
                 </div>
-                <div id="activityList" class="activity-list"></div>
-            </div>
-            <div class="container voice-functions">
-                <h2>Voice Input</h2>
-                <img src="logo.png" class="logo" alt="Logo">
-                <button class="btn" onclick="startListening()">Start Voice Input</button>
-                <div id="voiceOutput"></div>
-                <div id="voiceLog" class="voice-log"></div>
-            </div>
-            <div class="container stats-container">
-                <h2>Statistics</h2>
-                <table class="stats-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Mood Count</th>
-                            <th>Activity Count</th>
-                        </tr>
-                    </thead>
-                    <tbody id="statsTableBody">
-                        <!-- Statistics will be inserted here dynamically -->
-                    </tbody>
-                </table>
+                <!-- Welcome -->
+                <div class="carousel-item" id="newFeature3">
+                    <div class="logo-container">
+                        <img src="logo.png" class="logo" alt="Logo">
+                        <span class="logo-text">Raiz</span>
+                    </div>
+                    <div class="content-container scrollable-content">
+                        <h2 class="title">Welcome</h2>
+                        <div id="welcomeMessage">
+                            <p>Welcome to Raiz!</p>
+                            <img src="logo.png" class="feature3-logo" alt="Logo">
+                        </div>
+                        <div class="navigation-buttons">
+                            <button class="btn" id="feature3Prev" onclick="moveCarousel(-1)">Previous</button>
+                            <button class="btn" id="feature3Next" onclick="moveCarousel(1)">Next</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Mood Tracker -->
+                <div class="carousel-item" id="moodTracker">
+                    <div class="logo-container">
+                        <img src="logo.png" class="logo" alt="Logo">
+                        <span class="logo-text">Raiz</span>
+                    </div>
+                    <div class="content-container scrollable-content">
+                        <h1 class="title">Mood Tracker</h1>
+                        <div class="current-mood-box">
+                            <p>Today's Emoji</p>
+                            <div id="mood" class="mood">😐</div>
+                        </div>
+                        <div class="mood-section">
+                            <p>Your current mood:</p>
+                            <div class="emoji-container">
+                                <div class="emoji" onclick="updateMood('😊')">😊</div>
+                                <div class="emoji" onclick="updateMood('😢')">😢</div>
+                                <div class="emoji" onclick="updateMood('😡')">😡</div>
+                                <div class="emoji" onclick="updateMood('😐')">😐</div>
+                                <div class="emoji" onclick="updateMood('😄')">😄</div>
+                                <div class="emoji" onclick="updateMood('😓')">😓</div>
+                                <div class="emoji" onclick="updateMood('😤')">😤</div>
+                                <div class="emoji" onclick="updateMood('😍')">😍</div>
+                                <div class="emoji" onclick="updateMood('😎')">😎</div>
+                                <div class="emoji" onclick="updateMood('😏')">😏</div>
+                                <div class="emoji" onclick="updateMood('😴')">😴</div>
+                                <div class="emoji" onclick="updateMood('😲')">😲</div>
+                            </div>
+                        </div>
+                        <div class="navigation-buttons">
+                            <button class="btn" onclick="moveCarousel(-1)">Previous</button>
+                            <button class="btn" onclick="moveCarousel(1)">Next</button>
+                            <button class="btn" onclick="moveToContainer('emojiStats')">View Emoji Stats</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Text Input -->
+                <div class="carousel-item" id="textInput">
+                    <div class="logo-container">
+                        <span class="logo-text">Raiz</span>
+                    </div>
+                    <div class="content-container scrollable-content">
+                        <h2 class="title">Text Input</h2>
+                        <img src="text_input_icon.png" class="feature-icon" alt="Text Input Icon">
+                        <div class="activities">
+                            <p>What did you do today?</p>
+                            <input type="text" id="activityInput" placeholder="Enter activity">
+                        </div>
+                        <div class="button-container">
+                            <button class="btn" onclick="addActivity()">Add Activity</button>
+                        </div>
+                        <div id="activityList" class="activity-list"></div>
+                        <div class="navigation-buttons">
+                            <button class="btn" onclick="moveCarousel(-1)">Previous</button>
+                            <button class="btn" onclick="moveCarousel(1)">Next</button>
+                            <button class="btn" onclick="moveToContainer('activityStats')">View Activity Stats</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Voice Input -->
+                <div class="carousel-item" id="voiceInput">
+                    <div class="logo-container">
+                        <span class="logo-text">Raiz</span>
+                    </div>
+                    <div class="content-container scrollable-content">
+                        <h2 class="title">Voice Input</h2>
+                        <img src="voice_input_icon.png" class="feature-icon" alt="Voice Input Icon">
+                        <div class="button-container">
+                            <button class="btn" onclick="startListening()">Start Voice Input</button>
+                        </div>
+                        <div id="voiceOutput"></div>
+                        <div id="voiceLog" class="voice-log"></div>
+                        <div class="navigation-buttons">
+                            <button class="btn" onclick="moveCarousel(-1)">Previous</button>
+                            <button class="btn" onclick="moveCarousel(1)">Next</button>
+                            <button class="btn" onclick="moveToContainer('activityStats')">View Activity Stats</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Geolocation -->
+                <div class="carousel-item" id="geolocation">
+                    <div class="logo-container">
+                        <span class="logo-text">Raiz</span>
+                    </div>
+                    <div class="content-container scrollable-content">
+                        <h2 class="title">Geolocation</h2>
+                        <img src="geolocation_icon.png" class="feature-icon" alt="Geolocation Icon">
+                        <p>Current Location: <span id="location"></span></p>
+                        <div id="mapContainer" style="height: 300px;"></div>
+                        <div class="button-container">
+                            <button class="btn" onclick="getLocation()">Get Location</button>
+                        </div>
+                        <div id="locationLog" class="location-log"></div>
+                        <div class="navigation-buttons">
+                            <button class="btn" onclick="moveCarousel(-1)">Previous</button>
+                            <button class="btn" onclick="moveCarousel(1)">Next</button>
+                            <button class="btn" onclick="moveToContainer('activityStats')">View Activity Stats</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Activity Stats -->
+                <div class="carousel-item" id="activityStats">
+                    <div class="logo-container">
+                        <img src="logo.png" class="logo" alt="Logo">
+                        <span class="logo-text">Raiz</span>
+                    </div>
+                    <div class="content-container scrollable-content">
+                        <h2 class="title">Activity Stats</h2>
+                        <div id="activityLogTableContainer">
+                            <table id="activityLogTable" class="styled-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Activity</th>
+                                        <th>Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Activity log entries will be appended here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="emojiTableContainer">
+                            <table id="emojiTable" class="styled-table">
+                                <thead>
+                                    <tr>
+                                        <th>Emoji</th>
+                                        <th>Count</th>
+                                        <th>Latest Timestamps</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Emoji log entries will be appended here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="navigation-buttons">
+                            <button class="btn" onclick="moveCarousel(-1)">Previous</button>
+                            <button class="btn" onclick="moveCarousel(1)">Next</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Additional Feature -->
+                <div class="carousel-item" id="additionalFeature">
+                    <div class="logo-container">
+                        <img src="logo.png" class="logo" alt="Logo">
+                        <span class="logo-text">Raiz</span>
+                    </div>
+                    <div class="content-container scrollable-content">
+                        <h2 class="title">Additional Feature</h2>
+                        <div class="additional-content">
+                            <div id="textChartContainer" style="width: 100%; height: 400px;"></div>
+                            <div id="voiceChartContainer" style="width: 100%; height: 400px;"></div>
+                        </div>
+                        <div class="navigation-buttons">
+                            <button class="btn" onclick="moveCarousel(-1)">Previous</button>
+                            <button class="btn" onclick="moveCarousel(1)">Next</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Emoji Stats -->
+                <div class="carousel-item" id="emojiStats">
+                    <div class="content-container scrollable-content">
+                        <h2 class="title">Emoji Stats</h2>
+                        <div id="emojiChartContainer" style="width: 100%; height: 400px;"></div>
+                        <div class="navigation-buttons">
+                            <button class="btn" onclick="moveCarousel(-1)">Previous</button>
+                            <button class="btn" onclick="moveCarousel(1)">Next</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <script src="script.js"></script>
 </body>
 </html>
